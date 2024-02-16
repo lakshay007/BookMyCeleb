@@ -3,7 +3,9 @@ const oracle = require('oracledb');
 const app = express();
 
 app.listen(5000, () => {console.log('listening on 3000')});
-
+app.get('/', (req, res) => {
+    res.send('Hello World');
+}   );
 app.get('/login', (req, res) => {
     async function getData(){
         try{
