@@ -15,7 +15,7 @@ app.get('/login', (req, res) => {
                 connectString: 'localhost/xe'
             });
             const res = await connection.execute('SELECT * FROM HR.signup');
-            return res;
+            return res.rows;
         }catch(err){
             console.error(err);
         }   
