@@ -1,16 +1,20 @@
 const express = require('express');
 const oracle = require('oracledb');
 const app = express();
-
-app.listen(5000, () => {console.log('listening on 3000')});
-app.get('/', (req, res) => {
-    res.send('Hello World');
-}   );
-let connection = await oracle.getConnection({
+let connection;
+app.listen(5000, async() => {
+    connection = await oracle.getConnection({
     user: 'HR',
     password: '123',
     connectString: 'localhost/xe'
 });
+
+    
+    console.log('listening on 5000')});
+app.get('/', (req, res) => {
+    res.send('Hello World');
+}   );
+ 
 app.get('/UserData/:username', (req, res) => {
     async function getData(){
         try{
