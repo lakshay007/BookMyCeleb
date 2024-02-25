@@ -41,10 +41,12 @@ let handlelogin = async()=>{
     const check = await fetch(API_URL + "UserData/" + data.username)
     let ans = await check.json();
     console.log(ans);
+    console.log(ans[0].PASSWORD)
+    let fetchedpass = ans[0].PASSWORD
     if(ans == null){
         passwordauth = -2;
     }
-   else if(ans.password===data.password){
+   else if(fetchedpass===data.password){
         console.log("sign in successful")
         //document.cookie = "name=" +data.username+ "; SameSite=None; Secure";
         localStorage.setItem("username", data.username);

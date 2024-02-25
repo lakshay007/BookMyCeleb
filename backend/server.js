@@ -1,6 +1,9 @@
 const express = require('express');
 const oracle = require('oracledb');
+const cors = require('cors')
 const app = express();
+app.use(express.json())
+app.use(cors())
 let connection;
 app.listen(5000, async() => {
     connection = await oracle.getConnection({
@@ -30,3 +33,4 @@ app.get('/UserData/:username', (req, res) => {
         res.send(err);
     });
 });
+
