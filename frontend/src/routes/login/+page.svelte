@@ -1,5 +1,5 @@
 <script>
-    let API_URL = "http://localhost:3000/"
+    let API_URL = "http://localhost:5000/"
 let useralready = 0;
 let usersuccess = 0;
 let passwordauth = 0;
