@@ -1,18 +1,18 @@
 <script>
-
-</script>
-<main class="flex flex-col justify-center items-center gap-7">
-    <div class="text-8xl font-semibold">
-        BookEase
-    </div>
-    <div class="text-4xl">
-        Make every event memorable
-    </div>
-    <div class="flex flex-row justify-center items-center gap-5">
-        <a href="/login"><button class="btn btn-primary w-[12vw] bg-[#2f4159] text-white border-0">Login</button></a>
-        <a href="/signup"><button class="btn btn-primary w-[12vw] bg-[#2f4159] text-white border-0">Signup</button></a>
-    </div>
-</main>
-<style>
+    import Conversion from "../components/Conversion.svelte";
+    import FaQs from "../components/FAQs.svelte";
+    import Hero from "../components/Hero.svelte";
+    import Reviews from "../components/Reviews.svelte";
+    import Footer from "../components/Footer.svelte";
     
-</style>
+</script>
+
+<main class="flex flex-col">
+    
+    <Hero />
+    <Reviews />
+    <FaQs />
+    <Conversion />
+    <Footer />
+
+</main>
