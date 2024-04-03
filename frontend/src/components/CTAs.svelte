@@ -4,7 +4,7 @@
     import { goto } from '$app/navigation';
     let login = 0;
     let API_URL = "http://localhost:4000/"
-    let name;
+    let namee;
 let useralready = 0;
 let usersuccess = 0;
 let passwordauth = 0;
@@ -12,7 +12,8 @@ let uusername,passwordd;
 const handleSubmit = async(event)=>{
     const data = {
         username: uusername,
-        password: passwordd
+        password: passwordd,
+        name: namee
     }
    console.log(data);
    console.log(JSON.stringify(data));
@@ -40,7 +41,7 @@ window.location.href = '/homepage'
 let handlelogin = async()=>{
     const data = {
         username: uusername,
-        password: passwordd
+        password: passwordd,
     }
     const check = await fetch(API_URL + "UserData/" + data.username)
     let ans = await check.json();
@@ -175,7 +176,7 @@ let handlelogin = async()=>{
                 </div>
               </div>
               <div class="floating-label">
-                <input bind:value = {name} placeholder="Your name"  name="email" id="email" autocomplete="off">
+                <input bind:value = {namee} placeholder="Your name"  name="email" id="email" autocomplete="off">
                 <label for="email">Name:</label>
                 <div class="icon">
     

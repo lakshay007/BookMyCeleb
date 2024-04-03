@@ -37,15 +37,23 @@ app.get('/Celebs', async(req, res) => {
 }
 );
 
-app.post('/UserData', async(req, res) => {
-    try{
-        const { username, password } = req.body;
+app.post('/UserData', async (req, res) => {
+    try {
+        const { username, password, name } = req.body;
+
         const newUser = await pool.query('INSERT INTO logindetails (username, password) VALUES ($1, $2) RETURNING *', [username, password]);
-        res.json(newUser.rows[0]);
-    }catch(err){
+
+        
+        const newUserInfo = await pool.query('INSERT INTO userr (u_username, u_name) VALUES ($1, $2) RETURNING *', [username, name]);
+
+        
+        res.json({ user: newUser.rows[0], userInfo: newUserInfo.rows[0] });
+    } catch (err) {
         console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 app.get('/categories/:id', async(req, res) => {
     try{
         const categories = await pool.query('SELECT * FROM event natural join performsat natural join artist where categname = $1', [req.params.id]);

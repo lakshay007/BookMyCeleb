@@ -1,7 +1,7 @@
 <script>
     import { onMount } from 'svelte';
     import Nav from "../../components/Nav.svelte";
-    let value  = 1000000;
+    let value  = 100000;
     let budget;
     let API_URL = "http://localhost:4000/";
     let dropdownVisible = false;
