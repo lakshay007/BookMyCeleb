@@ -34,7 +34,7 @@
           <ul class="menu menu-horizontal px-40">
               <li><a on:click = {handlesignout}>Sign Out</a></li>
               <li><a href = '/help'>Chatbot help</a></li>
-              <li><a href = '/help'>Profile</a></li>
+              <li><a href = '#'>Profile</a></li>
           </ul>
       </div>
   </div>
