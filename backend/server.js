@@ -10,13 +10,13 @@ app.listen(4000, () => {
 app.get('/UserData/:id', async(req, res) => {
     try{
         const { id } = req.params;
-        const user = await pool.query('SELECT * FROM signup where username = $1', [id]);
+        const user = await pool.query('SELECT * FROM logindetails where username = $1', [id]);
         if (user.rows.length === 0) {
-            // Return an empty array if no user is found
+           
             
             res.json([]);
         } else {
-            // Return the user data if found
+            
             console.log(user.rows[0]);
             res.json(user.rows[0]);
         }
@@ -27,6 +27,15 @@ app.get('/UserData/:id', async(req, res) => {
         console.error(err);
     }
 });
+app.get('/Celebs', async(req, res) => {
+    try{
+        const celebs = await pool.query('SELECT * FROM artist');
+        res.json(celebs.rows);
+    }catch(err){
+        console.error(err);
+    }
+}
+);
 
 app.post('/UserData', async(req, res) => {
     try{
@@ -37,6 +46,46 @@ app.post('/UserData', async(req, res) => {
         console.error(err);
     }
 });
+app.get('/categories/:id', async(req, res) => {
+    try{
+        const categories = await pool.query('SELECT * FROM event natural join performsat natural join artist where categname = $1', [req.params.id]);
+        res.json(categories.rows);
+    }catch(err){
+        console.error(err);
+    }
+}
+);
+app.get('/Celebs/:id', async (req, res) => {
+    try {
+        const celebs = await pool.query('SELECT * FROM artist WHERE name ILIKE $1', ['%' + req.params.id + '%']);
+        res.json(celebs.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+app.get('/Celebs/Rating/:id', async (req, res) => {
+    try {
+        const celebs = await pool.query('SELECT * FROM artist WHERE rating = $1', [req.params.id]);
+        res.json(celebs.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+);
+
+app.get('/Celebs/Budget/:id', async (req, res) => {
+    try {
+        const celebs = await pool.query('SELECT * FROM artist WHERE totalrate <= $1', [req.params.id]);
+        res.json(celebs.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+);
+
 
 
 

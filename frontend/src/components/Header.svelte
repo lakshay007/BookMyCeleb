@@ -42,8 +42,8 @@ let handlelogin = async()=>{
     <div
         class="max-w-[1400px] mx-auto w-full flex items-center justify-between p-4 py-6"
     >
-        <a href="/">
-            <h1 class="font-semibold">
+        <a href="/" class = "webtitle">
+            <h1 class="font-semibold ">
                 Book <span class="text-indigo-400">Ease</span>
             </h1>
         </a>
@@ -170,6 +170,10 @@ label {
   color:  #000;
   opacity:  .8;
   font-weight:  400; 
+}
+.webtitle {
+    font-size:  1.4rem;
+    font-semibold:  800 !important;
 }
 form {
   padding:  40px 30px; 

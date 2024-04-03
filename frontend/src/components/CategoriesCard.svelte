@@ -28,7 +28,7 @@
         </div>
         <div class="flex items-center">
             <button class="specialBtnDark mr-auto font-semibold">
-                <p>Proceed &rarr;</p>
+                <a href = '/celebs'>Proceed &rarr;</a>
             </button>
         </div>
     </div>
