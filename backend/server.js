@@ -40,7 +40,7 @@ app.get('/Celebs', async(req, res) => {
 app.post('/UserData', async(req, res) => {
     try{
         const { username, password } = req.body;
-        const newUser = await pool.query('INSERT INTO signup (username, password) VALUES ($1, $2) RETURNING *', [username, password]);
+        const newUser = await pool.query('INSERT INTO logindetails (username, password) VALUES ($1, $2) RETURNING *', [username, password]);
         res.json(newUser.rows[0]);
     }catch(err){
         console.error(err);
