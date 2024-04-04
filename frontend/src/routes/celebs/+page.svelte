@@ -113,9 +113,9 @@
                     <div class="{dropdownVisible ? 'block' : 'hidden'} absolute top-12 left-0 bg-white shadow-lg rounded-lg">
                         <div class="py-1">
                             <!-- Dropdown options -->
-                            <div on:click={() => showCelebs('Concert')} class="px-4 py-2 cursor-pointer hover:bg-gray-200">Concert</div>
-                            <div on:click={() => showCelebs('Festival')} class="px-4 py-2 cursor-pointer hover:bg-gray-200">Festival</div>
-                            <div on:click={() => showCelebs('Exhibition')} class="px-4 py-2 cursor-pointer hover:bg-gray-200">Exhibition</div>
+                            <div on:click={() => showCelebs('music')} class="px-4 py-2 cursor-pointer hover:bg-gray-200">Music</div>
+                            <div on:click={() => showCelebs('dance')} class="px-4 py-2 cursor-pointer hover:bg-gray-200">Dance</div>
+                            <div on:click={() => showCelebs('comedy')} class="px-4 py-2 cursor-pointer hover:bg-gray-200">Comedy</div>
                         </div>
                     </div>
                 </div>

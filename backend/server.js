@@ -56,7 +56,7 @@ app.post('/UserData', async (req, res) => {
 
 app.get('/categories/:id', async(req, res) => {
     try{
-        const categories = await pool.query('SELECT * FROM event natural join performsat natural join artist where categname = $1', [req.params.id]);
+        const categories = await pool.query('SELECT * FROM event natural join performsat, artist where artist.username = performsat.username and event.categname  = $1', [req.params.id]);
         res.json(categories.rows);
     }catch(err){
         console.error(err);

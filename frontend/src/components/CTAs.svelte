@@ -4,12 +4,20 @@
     import { goto } from '$app/navigation';
     let login = 0;
     let API_URL = "http://localhost:4000/"
-    let namee;
+    let namee = "";
 let useralready = 0;
 let usersuccess = 0;
 let passwordauth = 0;
-let uusername,passwordd;
+let uusername = "",passwordd = "";
 const handleSubmit = async(event)=>{
+    if(uusername.length == 0 || passwordd.length == 0 || namee.length == 0){
+        alert("Please fill all the fields");
+        return;
+    }
+    if(uusername.length >10){
+        alert("please enter username less than 10 characters");
+        return;
+    }
     const data = {
         username: uusername,
         password: passwordd,

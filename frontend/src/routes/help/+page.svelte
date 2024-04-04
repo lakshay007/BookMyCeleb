@@ -1,5 +1,6 @@
 <script>
     import Nav from '../../components/Nav.svelte'
+    import Footer from "../../components/Footer.svelte";
     import '../../app.css'
     import { onMount } from 'svelte';
     import OpenAI from 'openai';
@@ -104,6 +105,7 @@
         </div>
         
     </div>
+    <Footer />
 </main>
 
 <style>
