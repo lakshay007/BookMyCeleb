@@ -17,7 +17,7 @@
         try {
             const openai = new OpenAI({
                 apiKey: PUBLIC_API_KEY,
-                dangerouslyAllowBrowser: true // This is also the default, can be omitted
+                dangerouslyAllowBrowser: true 
             });
             
             handlehelp = async () => {
@@ -107,5 +107,5 @@
 </main>
 
 <style>
-    /* Your styles here */
+
 </style>
