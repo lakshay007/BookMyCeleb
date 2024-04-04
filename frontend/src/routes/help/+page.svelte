@@ -79,7 +79,7 @@
     <div class="grow h-full w-full rounded-b-3xl flex flex-row justify-around items-center">
         <div class="grow h-full w-1/2 rounded-b-3xl flex flex-col justify-center items-center">
                 <div class=" flex flex-col justify-center items-center gap-y-5">
-                    <div class="text-5xl">Companion Care</div>
+                    <div class="text-5xl">Ask about a Celeb!</div>
                     <input bind:value={question} type="text" placeholder="Type here" class="input input-bordered input-white text-white w-[25vw]"/>
                     <button on:click={handlehelp} class="btn btn-primary w-[25vw] bg-[#2f4159] text-white border-0">Ask</button>
                     <button on:click={vc} class="btn btn-primary w-[25vw] bg-[#2f4159] text-white border-0">Voice</button>
