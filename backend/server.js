@@ -168,39 +168,141 @@
 
 
 
+// const express = require('express');
+// const pool = require('./db');
+// const cors = require('cors')
+// const app = express();
+// app.use(express.json());
+// app.use(cors());
+// app.listen(4000, () => {
+//     console.log('listening on 4000');
+// });
+// app.get('/UserData/:id', async(req, res) => {
+//     try{
+//         const { id } = req.params;
+//         const user = await pool.query('SELECT * FROM logindetails where username = $1', [id]);
+//         if (user.rows.length === 0) {
+           
+            
+//             res.json([]);
+//         } else {
+            
+//             console.log(user.rows[0]);
+//             res.json(user.rows[0]);
+//         }
+        
+//         console.log(user.rows[0]);
+    
+//     }catch(err){
+//         console.error(err);
+//     }
+// });
+// app.get('/Celebs', async(req, res) => {
+//     try{
+//         const celebs = await pool.query('SELECT * FROM artist');
+//         res.json(celebs.rows);
+//     }catch(err){
+//         console.error(err);
+//     }
+// }
+// );
+
+// app.post('/UserData', async (req, res) => {
+//     try {
+//         const { username, password, name } = req.body;
+
+//         const newUser = await pool.query('INSERT INTO logindetails (username, password) VALUES ($1, $2) RETURNING *', [username, password]);
+
+        
+//         const newUserInfo = await pool.query('INSERT INTO userr (u_username, u_name) VALUES ($1, $2) RETURNING *', [username, name]);
+
+        
+//         res.json({ user: newUser.rows[0], userInfo: newUserInfo.rows[0] });
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// });
+
+// app.get('/categories/:id', async(req, res) => {
+//     try{
+//         const categories = await pool.query('SELECT * FROM event natural join performsat, artist where artist.username = performsat.username and event.categname  = $1', [req.params.id]);
+//         res.json(categories.rows);
+//     }catch(err){
+//         console.error(err);
+//     }
+// }
+// );
+// app.get('/Celebs/:id', async (req, res) => {
+//     try {
+//         const celebs = await pool.query('SELECT * FROM artist WHERE name ILIKE $1', ['%' + req.params.id + '%']);
+//         res.json(celebs.rows);
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// });
+// app.get('/Celebs/Rating/:id', async (req, res) => {
+//     try {
+//         const celebs = await pool.query('SELECT * FROM artist WHERE rating = $1', [req.params.id]);
+//         res.json(celebs.rows);
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// }
+// );
+
+// app.get('/Celebs/Budget/:id', async (req, res) => {
+//     try {
+//         const celebs = await pool.query('SELECT * FROM artist WHERE totalrate <= $1', [req.params.id]);
+//         res.json(celebs.rows);
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// }
+// );
+const mysql = require('mysql2/promise');
 const express = require('express');
-const pool = require('./db');
 const cors = require('cors')
 const app = express();
 app.use(express.json());
-app.use(cors());
+ app.use(cors());
+
+const mysqlpool = mysql.createPool({
+    host: 'localhost',
+    user: 'root',
+    password: '12345678',
+    database: 'dbsproj',
+});
+mysqlpool.query("SELECT 1")
+.then((data) => console.log("database connected"))
+.catch(console.error);
+
 app.listen(4000, () => {
     console.log('listening on 4000');
-});
+}
+);
+
+
 app.get('/UserData/:id', async(req, res) => {
     try{
-        const { id } = req.params;
-        const user = await pool.query('SELECT * FROM logindetails where username = $1', [id]);
-        if (user.rows.length === 0) {
-           
-            
+        const [user] = await mysqlpool.query('SELECT * FROM logindetails where username = ?', [req.params.id]);
+        if (user.length === 0) {
             res.json([]);
         } else {
-            
-            console.log(user.rows[0]);
-            res.json(user.rows[0]);
+            res.json(user[0]);
         }
-        
-        console.log(user.rows[0]);
-    
     }catch(err){
         console.error(err);
     }
 });
+
 app.get('/Celebs', async(req, res) => {
     try{
-        const celebs = await pool.query('SELECT * FROM artist');
-        res.json(celebs.rows);
+        const [celebs] = await mysqlpool.query('SELECT * FROM artist');
+        res.json(celebs);
     }catch(err){
         console.error(err);
     }
@@ -211,13 +313,13 @@ app.post('/UserData', async (req, res) => {
     try {
         const { username, password, name } = req.body;
 
-        const newUser = await pool.query('INSERT INTO logindetails (username, password) VALUES ($1, $2) RETURNING *', [username, password]);
+        const [newUser] = await mysqlpool.query('INSERT INTO logindetails (username, password) VALUES (?, ?)', [username, password]);
 
         
-        const newUserInfo = await pool.query('INSERT INTO userr (u_username, u_name) VALUES ($1, $2) RETURNING *', [username, name]);
+        const [newUserInfo] = await mysqlpool.query('INSERT INTO userr (u_username, u_name) VALUES (?, ?)', [username, name]);
 
         
-        res.json({ user: newUser.rows[0], userInfo: newUserInfo.rows[0] });
+        res.json({ user: newUser, userInfo: newUserInfo });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -226,26 +328,28 @@ app.post('/UserData', async (req, res) => {
 
 app.get('/categories/:id', async(req, res) => {
     try{
-        const categories = await pool.query('SELECT * FROM event natural join performsat, artist where artist.username = performsat.username and event.categname  = $1', [req.params.id]);
-        res.json(categories.rows);
+        const [categories] = await mysqlpool.query('SELECT * FROM event natural join performsat, artist where artist.username = performsat.username and event.categname  = ?', [req.params.id]);
+        res.json(categories);
     }catch(err){
         console.error(err);
     }
 }
 );
+
 app.get('/Celebs/:id', async (req, res) => {
     try {
-        const celebs = await pool.query('SELECT * FROM artist WHERE name ILIKE $1', ['%' + req.params.id + '%']);
-        res.json(celebs.rows);
+        const [celebs] = await mysqlpool.query('SELECT * FROM artist WHERE name LIKE ?', ['%' + req.params.id + '%']);
+        res.json(celebs);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 app.get('/Celebs/Rating/:id', async (req, res) => {
     try {
-        const celebs = await pool.query('SELECT * FROM artist WHERE rating = $1', [req.params.id]);
-        res.json(celebs.rows);
+        const [celebs] = await mysqlpool.query('SELECT * FROM artist WHERE rating = ?', [req.params.id]);
+        res.json(celebs);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal server error' });
@@ -255,12 +359,15 @@ app.get('/Celebs/Rating/:id', async (req, res) => {
 
 app.get('/Celebs/Budget/:id', async (req, res) => {
     try {
-        const celebs = await pool.query('SELECT * FROM artist WHERE totalrate <= $1', [req.params.id]);
-        res.json(celebs.rows);
+        const [celebs] = await mysqlpool.query('SELECT * FROM artist WHERE hourlyrate <= ?', [req.params.id]);
+        res.json(celebs);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal server error' });
     }
 }
 );
+
+
+
 
