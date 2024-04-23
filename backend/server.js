@@ -1,3 +1,108 @@
+const mysql = require('mysql2/promise');
+const express = require('express');
+const cors = require('cors')
+const app = express();
+app.use(express.json());
+ app.use(cors());
+
+const mysqlpool = mysql.createPool({
+    host: 'localhost',
+    user: 'root',
+    password: '12345678',
+    database: 'dbsproj',
+});
+mysqlpool.query("SELECT 1")
+.then((data) => console.log("database connected"))
+.catch(console.error);
+
+app.listen(4000, () => {
+    console.log('listening on 4000');
+}
+);
+
+
+app.get('/UserData/:id', async(req, res) => {
+    try{
+        const [user] = await mysqlpool.query('SELECT * FROM logindetails where username = ?', [req.params.id]);
+        if (user.length === 0) {
+            res.json([]);
+        } else {
+            res.json(user[0]);
+        }
+    }catch(err){
+        console.error(err);
+    }
+});
+
+app.get('/Celebs', async(req, res) => {
+    try{
+        const [celebs] = await mysqlpool.query('SELECT * FROM artist');
+        res.json(celebs);
+    }catch(err){
+        console.error(err);
+    }
+}
+);
+
+app.post('/UserData', async (req, res) => {
+    try {
+        const { username, password, name } = req.body;
+
+        const [newUser] = await mysqlpool.query('INSERT INTO logindetails (username, password) VALUES (?, ?)', [username, password]);
+
+        
+        const [newUserInfo] = await mysqlpool.query('INSERT INTO userr (u_username, u_name) VALUES (?, ?)', [username, name]);
+
+        
+        res.json({ user: newUser, userInfo: newUserInfo });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.get('/categories/:id', async(req, res) => {
+    try{
+        const [categories] = await mysqlpool.query('SELECT * FROM event natural join performsat, artist where artist.username = performsat.username and event.categname  = ?', [req.params.id]);
+        res.json(categories);
+    }catch(err){
+        console.error(err);
+    }
+}
+);
+
+app.get('/Celebs/:id', async (req, res) => {
+    try {
+        const [celebs] = await mysqlpool.query('SELECT * FROM artist WHERE name LIKE ?', ['%' + req.params.id + '%']);
+        res.json(celebs);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.get('/Celebs/Rating/:id', async (req, res) => {
+    try {
+        const [celebs] = await mysqlpool.query('SELECT * FROM artist WHERE rating = ?', [req.params.id]);
+        res.json(celebs);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+);
+
+app.get('/Celebs/Budget/:id', async (req, res) => {
+    try {
+        const [celebs] = await mysqlpool.query('SELECT * FROM artist WHERE hourlyrate <= ?', [req.params.id]);
+        res.json(celebs);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+);
+
 // const express = require('express');
 // const oracle = require('oracledb');
 // const app = express();
@@ -263,110 +368,7 @@
 //     }
 // }
 // );
-const mysql = require('mysql2/promise');
-const express = require('express');
-const cors = require('cors')
-const app = express();
-app.use(express.json());
- app.use(cors());
 
-const mysqlpool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: '12345678',
-    database: 'dbsproj',
-});
-mysqlpool.query("SELECT 1")
-.then((data) => console.log("database connected"))
-.catch(console.error);
-
-app.listen(4000, () => {
-    console.log('listening on 4000');
-}
-);
-
-
-app.get('/UserData/:id', async(req, res) => {
-    try{
-        const [user] = await mysqlpool.query('SELECT * FROM logindetails where username = ?', [req.params.id]);
-        if (user.length === 0) {
-            res.json([]);
-        } else {
-            res.json(user[0]);
-        }
-    }catch(err){
-        console.error(err);
-    }
-});
-
-app.get('/Celebs', async(req, res) => {
-    try{
-        const [celebs] = await mysqlpool.query('SELECT * FROM artist');
-        res.json(celebs);
-    }catch(err){
-        console.error(err);
-    }
-}
-);
-
-app.post('/UserData', async (req, res) => {
-    try {
-        const { username, password, name } = req.body;
-
-        const [newUser] = await mysqlpool.query('INSERT INTO logindetails (username, password) VALUES (?, ?)', [username, password]);
-
-        
-        const [newUserInfo] = await mysqlpool.query('INSERT INTO userr (u_username, u_name) VALUES (?, ?)', [username, name]);
-
-        
-        res.json({ user: newUser, userInfo: newUserInfo });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-
-app.get('/categories/:id', async(req, res) => {
-    try{
-        const [categories] = await mysqlpool.query('SELECT * FROM event natural join performsat, artist where artist.username = performsat.username and event.categname  = ?', [req.params.id]);
-        res.json(categories);
-    }catch(err){
-        console.error(err);
-    }
-}
-);
-
-app.get('/Celebs/:id', async (req, res) => {
-    try {
-        const [celebs] = await mysqlpool.query('SELECT * FROM artist WHERE name LIKE ?', ['%' + req.params.id + '%']);
-        res.json(celebs);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-app.get('/Celebs/Rating/:id', async (req, res) => {
-    try {
-        const [celebs] = await mysqlpool.query('SELECT * FROM artist WHERE rating = ?', [req.params.id]);
-        res.json(celebs);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-}
-);
-
-app.get('/Celebs/Budget/:id', async (req, res) => {
-    try {
-        const [celebs] = await mysqlpool.query('SELECT * FROM artist WHERE hourlyrate <= ?', [req.params.id]);
-        res.json(celebs);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-}
-);
 
 
 
