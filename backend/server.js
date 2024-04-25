@@ -51,7 +51,7 @@ app.post('/UserData', async (req, res) => {
         const [newUser] = await mysqlpool.query('INSERT INTO logindetails (username, password) VALUES (?, ?)', [username, password]);
 
         
-        const [newUserInfo] = await mysqlpool.query('INSERT INTO userr (u_username, u_name) VALUES (?, ?)', [username, name]);
+        const [newUserInfo] = await mysqlpool.query('INSERT INTO user (u_username, u_name) VALUES (?, ?)', [username, name]);
 
         
         res.json({ user: newUser, userInfo: newUserInfo });
@@ -63,7 +63,7 @@ app.post('/UserData', async (req, res) => {
 
 app.get('/categories/:id', async(req, res) => {
     try{
-        const [categories] = await mysqlpool.query('SELECT * FROM event natural join performsat, artist where artist.username = performsat.username and event.categname  = ?', [req.params.id]);
+        const [categories] = await mysqlpool.query('select * from artist where username in ( select username from event natural join performsat where categname = ?);', [req.params.id]);
         res.json(categories);
     }catch(err){
         console.error(err);
@@ -102,6 +102,72 @@ app.get('/Celebs/Budget/:id', async (req, res) => {
     }
 }
 );
+
+app.get('/Celebs/date/:id', async (req, res) => {
+    try {
+        const [celebs] = await mysqlpool.query('select * from artist where username in (select username from canperformon where date = ?)', [req.params.id]);
+        res.json(celebs);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+);
+app.get('/Celebs/data/:id', async (req, res) => {
+    try {
+        const [celebs] = await mysqlpool.query('SELECT * FROM artist WHERE username = ?', [req.params.id]);
+        res.json(celebs);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+);
+app.get('/bookingdetails/:id', async (req, res) => {
+    try {
+        const [celebs] = await mysqlpool.query('select * from artist join userbooked on userbooked.a_username = artist.username where userbooked.u_username = ?', [req.params.id]);
+        res.json(celebs);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+);
+async function calculateTotalCost(username) {
+   
+    try {
+      const [rows] = await mysqlpool.query('SELECT calculate_total_cost(?) AS total_cost', [username]);
+      return rows[0].total_cost;
+    } catch (error) {
+      console.error('Error:', error);
+      throw error;
+    }
+  }
+app.get('/calccost/:username', async (req, res) => {
+    const { username } = req.params;
+    try {
+      const totalCost = await calculateTotalCost(username);
+      res.json({ totalCost });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+  app.post('/userbooked', async (req, res) => {
+    try {
+        const { u_username, a_username, date, amt_paid } = req.body;
+        const [newUser] = await mysqlpool.query('INSERT INTO userbooked (u_username, a_username, date, amt_paid) VALUES (?, ?, ?, ?)', [u_username, a_username, date, amt_paid]);
+        res.json({ user: newUser });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
+
 
 // const express = require('express');
 // const oracle = require('oracledb');

@@ -1,6 +1,10 @@
 <script>
     import { onMount } from 'svelte';
     import Nav from "../../components/Nav.svelte";
+    let datee;
+   
+	
+	let date = new Date()
     let value  = 100000;
     let budget;
     let API_URL = "http://localhost:4000/";
@@ -13,6 +17,7 @@
         let ans = await check.json();   
         celebs = ans;
         console.log(stars);
+        
     });
     
 
@@ -38,10 +43,12 @@
         celebs = ans;
     }
     let clearstars = async() => {
+        artistname = "";
         stars = 3;
         const check = await fetch(API_URL + "Celebs");
         let ans = await check.json();   
         celebs = ans;
+        datee = "";
     }
     let handleOnChange = async(event) => {
         budget = event.target.value;
@@ -57,6 +64,15 @@
         }
         console.log(budget);
     }
+    let searchbydate = async() => {
+        console.log(datee);
+        const check = await fetch(API_URL + "Celebs/date/" + datee);
+        let ans = await check.json();
+        celebs = ans;
+    }
+    let handlebooking = async(username) => {
+        window.location.href = 'http://localhost:5173/celebs/'+username;
+    }
 
 </script>
 
@@ -64,7 +80,7 @@
     
     <Nav />
 
-    <div class="min-h-screen bg-gray-100 flex px-0">
+    <div class="min-h-screen bg-gray-100 flex px-0 ">
         <!-- Sidebar -->
         <div class="w-64 bg-white shadow-lg">
             <!-- Sidebar content goes here -->
@@ -119,18 +135,32 @@
                         </div>
                     </div>
                 </div>
+                
                 <div class="bg-red-600 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
                     <span on:click = {searchbyname}>Search</span>
                 </div>
+                <div>
+                    <input bind:value={datee} type="date" style="background-color: white;" />
+                </div>
+  
+                <div class="bg-red-600 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
+                    <span on:click = {searchbydate}>Search by date</span>
+                </div>
+                <div class="bg-red-600 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
+                    <span on:click = {clearstars}>Clear</span>
+                </div>
+                
+
             </div>
-            <div class="grid grid-cols-3 gap-4 mt-4">
+            <div class="grid grid-cols-3 gap-4 mt-16 py-8">
             {#each celebs as celeb}
                 <div class="card card-compact w-96 bg-white-100 shadow-xl">
-                    <figure><img src={celeb.image} alt={celeb.name} /></figure>
+                    <figure><img src='../assets/{celeb.image}.png' alt={celeb.name} /></figure>
                     <div class="card-body">
                       <h2 class="card-title">{celeb.name}</h2>
+                      <p class="font-sans text-xl">{celeb.description}</p>
                       <div class="card-actions justify-end">
-                        <button class="btn btn-primary">View Details</button>
+                        <button on:click={handlebooking(celeb.username)} class="btn btn-primary">View Details</button>
                       </div>
                     </div>
                 </div>

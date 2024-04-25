@@ -9,6 +9,18 @@ let useralready = 0;
 let usersuccess = 0;
 let passwordauth = 0;
 let uusername = "",passwordd = "";
+function isPasswordStrong(password) {
+    const uppercaseRegex = /[A-Z]/;
+    const lowercaseRegex = /[a-z]/;
+    const specialCharRegex = /[^A-Za-z0-9]/;
+
+    return (
+        uppercaseRegex.test(password) &&
+        lowercaseRegex.test(password) &&
+        specialCharRegex.test(password)
+    );
+}
+
 const handleSubmit = async(event)=>{
     if(uusername.length == 0 || passwordd.length == 0 || namee.length == 0){
         alert("Please fill all the fields");
@@ -16,6 +28,10 @@ const handleSubmit = async(event)=>{
     }
     if(uusername.length >10){
         alert("please enter username less than 10 characters");
+        return;
+    }
+    if (!isPasswordStrong(passwordd)) {
+        alert("Password must contain at least one uppercase letter, one lowercase letter, and one special character.");
         return;
     }
     const data = {

@@ -35,6 +35,7 @@
               <li><a on:click = {handlesignout}>Sign Out</a></li>
               <li><a href = '/help'>Chatbot help</a></li>
               <li><a href = '/celebs'>Booking</a></li>
+              <li><a href = '/bookings'>Your bookings</a></li>
           </ul>
       </div>
   </div>
